@@ -1,4 +1,4 @@
-class bibliotecaPersonal: 
+class BibliotecaPersonal: 
     """
     Gestiona una lista doblemente enlazada de libros
     que permite insertar buscar actualizar y eliminar libros
@@ -8,14 +8,14 @@ class bibliotecaPersonal:
         self.cola = None
         self._cantidad = 0
 
-    def vacia(self): 
+    def esta_vacia(self): 
         """
         Indica si la lista esta vacia y
         va retornar true si no hay elementos
         """
         return self.cabeza is None
     
-    def cantidad(self):
+    def cantidad_libros(self):
         '''retorna la cantidad de libros que se encuentran disponibles'''
         return self._cantidad
     
@@ -35,15 +35,15 @@ class bibliotecaPersonal:
         if not libro.categoria or not libro.categoria.strip():
             raise ValueError("categoria invalida")
     
-    def insertar_inicio(self, libro):
+    def insertar_al_inicio(self, libro):
         '''insertara un libro al inicio de la lista
         lanzara valueError si el isbn ya existe o algun dato invalido'''
 
         self.validar(libro)
-        if self.buscar_isbn(libro.isbn):
+        if self.buscar_por_isbn(libro.isbn):
             raise ValueError("El isbn ya existe")
-        nuevo = nodoLibro(libro)
-        if self.vacia():
+        nuevo = NodoLibro(libro)
+        if self.esta_vacia():
             self.cabeza = self.cola = nuevo
         else:
             nuevo.siguiente = self.cabeza
@@ -51,14 +51,14 @@ class bibliotecaPersonal:
             self.cabeza = nuevo
         self._cantidad += 1
 
-    def insertar_final(self, libro):
+    def insertar_al_final(self, libro):
         '''insertara un libro al final de la lista'''
 
         self.validar(libro)
-        if self.buscar_isbn(libro.isbn):
+        if self.buscar_por_isbn(libro.isbn):
             raise ValueError("El isbn ya existe")
-        nuevo = nodoLibro(libro)
-        if self.vacia():
+        nuevo = NodoLibro(libro)
+        if self.esta_vacia():
             self.cabeza = self.cola = nuevo
         else:
             nuevo.anterior = self.cola
@@ -70,23 +70,23 @@ class bibliotecaPersonal:
         '''insertara un libro de forma ordenada por titulo'''
 
         self.validar(libro) 
-        if self.buscar_isbn(libro.isbn):
+        if self.buscar_por_isbn(libro.isbn):
             raise ValueError("El isbn ya existe")
-        if self.vacia():
-            self.insertar_inicio(libro)
+        if self.esta_vacia():
+            self.insertar_al_inicio(libro)
             return
         actual = self.cabeza
 
         # recorre la lista hasta encontrar la posicion correcta
         # comparando alfabeticamente por titulo
-        while actual and actual.libro.titulo.lower() < libro.titulo.lower():
+        while actual and actual.dato.titulo.lower() < libro.titulo.lower():
             actual = actual.siguiente
         if actual == self.cabeza:
-            self.insertar_inicio(libro)
+            self.insertar_al_inicio(libro)
         elif actual is None:
-            self.insertar_final(libro)
+            self.insertar_al_final(libro)
         else:
-            nuevo = nodoLibro(libro)
+            nuevo = NodoLibro(libro)
             anterior = actual.anterior
             anterior.siguiente = nuevo
             nuevo.anterior = anterior
@@ -95,7 +95,7 @@ class bibliotecaPersonal:
             self._cantidad += 1
 
     '''Consulta'''
-    def buscar_isbn(self, isbn):
+    def buscar_por_isbn(self, isbn):
         '''buscara un libro por su isbn
         retornara si el libro se encuentra y None si no existe'''
 
@@ -103,12 +103,12 @@ class bibliotecaPersonal:
             raise ValueError("isbn invalido")
         actual = self.cabeza
         while actual:
-            if actual.libro.isbn == isbn:
-                return actual.libro
+            if actual.dato.isbn == isbn:
+                return actual.dato
             actual = actual.siguiente
         return None
 
-    def buscar_autor(self, autor):
+    def buscar_por_autor(self, autor):
         '''busca libros por su autor exacto
         retorna si se encontro'''
 
@@ -117,12 +117,12 @@ class bibliotecaPersonal:
         resultados = []
         actual = self.cabeza
         while actual:
-            if actual.libro.autor.lower() == autor.lower():
-                resultados.append(actual.libro)
+            if actual.dato.autor.lower() == autor.lower():
+                resultados.append(actual.dato)
             actual = actual.siguiente
         return resultados
 
-    def buscar_categoria(self, categoria):
+    def buscar_por_categoria(self, categoria):
         '''busca libro por su categoria exacta'''
 
         if not categoria.strip():
@@ -130,8 +130,8 @@ class bibliotecaPersonal:
         resultados = []
         actual = self.cabeza
         while actual:
-            if actual.libro.categoria.lower() == categoria.lower():
-                resultados.append(actual.libro)
+            if actual.dato.categoria.lower() == categoria.lower():
+                resultados.append(actual.dato)
             actual = actual.siguiente
         return resultados
     
@@ -152,19 +152,19 @@ class bibliotecaPersonal:
             raise ValueError("categoria invalida")
         actual = self.cabeza
         while actual:
-            if actual.libro.isbn == isbn:
-                actual.libro.actualizar(titulo, autor, anio, categoria)
+            if actual.dato.isbn == isbn:
+                actual.dato.actualizar(titulo, autor, anio, categoria)
                 return True
             actual = actual.siguiente
         raise ValueError("Libro no encontrado")
     
     '''eliminar'''
-    def eliminar_isbn(self, isbn):
+    def eliminar_por_isbn(self, isbn):
         if not str(isbn).strip().isdigit():
             raise ValueError("isbn invalido")
         actual = self.cabeza
         while actual:
-            if actual.libro.isbn == isbn:
+            if actual.dato.isbn == isbn:
                 if actual.anterior:
                     actual.anterior.siguiente = actual.siguiente
                 else:
@@ -178,9 +178,26 @@ class bibliotecaPersonal:
             actual = actual.siguiente
         raise ValueError("Libro no encontrado")
 
+    def mostrar_todos(self):
+        libros = []
+        actual = self.cabeza
+
+        while actual:
+            libros.append(actual.dato)
+            actual = actual.siguiente
+        return libros
+
+    def mostrar_todos_inverso(self):
+        libros = []
+        actual = self.cola
+        while actual:
+            libros.append(actual.dato)
+            actual = actual.anterior
+        return libros
+    
     def __iter__(self):
         '''recorre la biblioteca como si fuera un for'''
         actual = self.cabeza
         while actual:
-            yield actual.libro
+            yield actual.dato
             actual = actual.siguiente
