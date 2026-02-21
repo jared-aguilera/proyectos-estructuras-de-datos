@@ -30,8 +30,8 @@ class bibliotecaPersonal:
             raise ValueError("titulo invalido")
         if not libro.autor or not libro.autor.strip():
             raise ValueError("autor invalido")
-        if not str(libro.fecha).isdigit():
-            raise ValueError("fecha invalida")
+        if not str(libro.anio).isdigit():
+            raise ValueError("año invalido")
         if not libro.categoria or not libro.categoria.strip():
             raise ValueError("categoria invalida")
     
@@ -69,7 +69,7 @@ class bibliotecaPersonal:
     def insertar_ordenado(self, libro):
         '''insertara un libro de forma ordenada por titulo'''
 
-        self.validar(libro)
+        self.validar(libro) 
         if self.buscar_isbn(libro.isbn):
             raise ValueError("El isbn ya existe")
         if self.vacia():
@@ -136,9 +136,9 @@ class bibliotecaPersonal:
         return resultados
     
     '''actualiozar'''
-    def actualizar_libro(self, isbn, titulo, autor, fecha, categoria):
+    def actualizar_libro(self, isbn, titulo, autor, anio, categoria):
         '''actualiza los datos de un libro existente
-        retorna True si se actualizo y valueError si el sibn es invalido'''
+        retorna True si se actualizo y valueError si el isbn es invalido'''
 
         if not str(isbn).strip().isdigit():
             raise ValueError("isbn invalido")
@@ -146,14 +146,14 @@ class bibliotecaPersonal:
             raise ValueError("titulo invalido")
         if not autor.strip():
             raise ValueError("autor invalido")
-        if not str(fecha).isdigit():
-            raise ValueError("fecha invalida")
+        if not str(anio).isdigit():
+            raise ValueError("año invalido")
         if not categoria.strip():
             raise ValueError("categoria invalida")
         actual = self.cabeza
         while actual:
             if actual.libro.isbn == isbn:
-                actual.libro.actualizar(titulo, autor, fecha, categoria)
+                actual.libro.actualizar(titulo, autor, anio, categoria)
                 return True
             actual = actual.siguiente
         raise ValueError("Libro no encontrado")
