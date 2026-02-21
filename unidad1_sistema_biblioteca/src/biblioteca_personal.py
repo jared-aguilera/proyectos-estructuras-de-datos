@@ -1,9 +1,15 @@
+from __future__ import annotations
+from typing import Optional, List
+from nodo_libro import NodoLibro
+from libro import Libro
+
 class BibliotecaPersonal: 
     """
     Gestiona una lista doblemente enlazada de libros
     que permite insertar buscar actualizar y eliminar libros
     """
     def __init__(self):
+        """Inicializa la biblioteca vacia"""
         self.cabeza = None
         self.cola = None
         self._cantidad = 0
@@ -16,13 +22,13 @@ class BibliotecaPersonal:
         return self.cabeza is None
     
     def cantidad_libros(self):
-        '''retorna la cantidad de libros que se encuentran disponibles'''
+        """retorna la cantidad de libros que se encuentran disponibles"""
         return self._cantidad
     
     def validar(self, libro):
-        '''validaremos los datos de los libros,
+        """validaremos los datos de los libros,
         parametros seran libro objeto libro a validar
-        lanzara valueError si algun dato es erroneo'''
+        lanzara valueError si algun dato es erroneo"""
 
         if not libro.isbn or not str(libro.isbn).strip().isdigit():
             raise ValueError("tu isbn es invalido")
@@ -36,8 +42,8 @@ class BibliotecaPersonal:
             raise ValueError("categoria invalida")
     
     def insertar_al_inicio(self, libro):
-        '''insertara un libro al inicio de la lista
-        lanzara valueError si el isbn ya existe o algun dato invalido'''
+        """insertara un libro al inicio de la lista
+        lanzara valueError si el isbn ya existe o algun dato invalido"""
 
         self.validar(libro)
         if self.buscar_por_isbn(libro.isbn):
@@ -52,7 +58,7 @@ class BibliotecaPersonal:
         self._cantidad += 1
 
     def insertar_al_final(self, libro):
-        '''insertara un libro al final de la lista'''
+        """insertara un libro al final de la lista"""
 
         self.validar(libro)
         if self.buscar_por_isbn(libro.isbn):
@@ -67,7 +73,7 @@ class BibliotecaPersonal:
         self._cantidad += 1
 
     def insertar_ordenado(self, libro):
-        '''insertara un libro de forma ordenada por titulo'''
+        """insertara un libro de forma ordenada por titulo"""
 
         self.validar(libro) 
         if self.buscar_por_isbn(libro.isbn):
@@ -94,10 +100,10 @@ class BibliotecaPersonal:
             actual.anterior = nuevo
             self._cantidad += 1
 
-    '''Consulta'''
+    """Consulta"""
     def buscar_por_isbn(self, isbn):
-        '''buscara un libro por su isbn
-        retornara si el libro se encuentra y None si no existe'''
+        """buscara un libro por su isbn
+        retornara si el libro se encuentra y None si no existe"""
 
         if not str(isbn).strip().isdigit():
             raise ValueError("isbn invalido")
@@ -109,8 +115,8 @@ class BibliotecaPersonal:
         return None
 
     def buscar_por_autor(self, autor):
-        '''busca libros por su autor exacto
-        retorna si se encontro'''
+        """busca libros por su autor exacto
+        retorna si se encontro"""
 
         if not autor.strip():
             raise ValueError("autor invalido")
@@ -123,7 +129,7 @@ class BibliotecaPersonal:
         return resultados
 
     def buscar_por_categoria(self, categoria):
-        '''busca libro por su categoria exacta'''
+        """busca libro por su categoria exacta"""
 
         if not categoria.strip():
             raise ValueError("categoria invalida")
@@ -135,10 +141,10 @@ class BibliotecaPersonal:
             actual = actual.siguiente
         return resultados
     
-    '''actualiozar'''
+    """actualiozar"""
     def actualizar_libro(self, isbn, titulo, autor, anio, categoria):
-        '''actualiza los datos de un libro existente
-        retorna True si se actualizo y valueError si el isbn es invalido'''
+        """actualiza los datos de un libro existente
+        retorna True si se actualizo y valueError si el isbn es invalido"""
 
         if not str(isbn).strip().isdigit():
             raise ValueError("isbn invalido")
@@ -158,7 +164,7 @@ class BibliotecaPersonal:
             actual = actual.siguiente
         raise ValueError("Libro no encontrado")
     
-    '''eliminar'''
+    """eliminar"""
     def eliminar_por_isbn(self, isbn):
         if not str(isbn).strip().isdigit():
             raise ValueError("isbn invalido")
@@ -196,7 +202,7 @@ class BibliotecaPersonal:
         return libros
     
     def __iter__(self):
-        '''recorre la biblioteca como si fuera un for'''
+        """recorre la biblioteca como si fuera un for"""
         actual = self.cabeza
         while actual:
             yield actual.dato
