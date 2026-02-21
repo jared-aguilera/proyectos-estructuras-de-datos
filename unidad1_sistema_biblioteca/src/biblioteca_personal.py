@@ -109,7 +109,7 @@ class BibliotecaPersonal:
             raise ValueError("isbn invalido")
         actual = self.cabeza
         while actual:
-            if actual.dato.isbn == isbn:
+            if int(actual.dato.isbn) == int(isbn):
                 return actual.dato
             actual = actual.siguiente
         return None
@@ -158,7 +158,7 @@ class BibliotecaPersonal:
             raise ValueError("categoria invalida")
         actual = self.cabeza
         while actual:
-            if actual.dato.isbn == isbn:
+            if int(actual.dato.isbn) == int(isbn):
                 actual.dato.actualizar(titulo, autor, anio, categoria)
                 return True
             actual = actual.siguiente
@@ -170,7 +170,7 @@ class BibliotecaPersonal:
             raise ValueError("isbn invalido")
         actual = self.cabeza
         while actual:
-            if actual.dato.isbn == isbn:
+            if int(actual.dato.isbn) == int(isbn):
                 if actual.anterior:
                     actual.anterior.siguiente = actual.siguiente
                 else:
