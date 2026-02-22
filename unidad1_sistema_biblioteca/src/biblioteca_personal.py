@@ -30,16 +30,16 @@ class BibliotecaPersonal:
         parametros seran libro objeto libro a validar
         lanzara valueError si algun dato es erroneo"""
 
-        if not libro.isbn or not str(libro.isbn).strip().isdigit():
-            raise ValueError("tu isbn es invalido")
+        if not libro.isbn or not str(libro.isbn).strip().isdigit() or len(str(libro.isbn).strip()) > 13:
+            raise ValueError("ISBN inválido")
         if not libro.titulo or not libro.titulo.strip():
-            raise ValueError("titulo invalido")
+            raise ValueError("Titulo inválido")
         if not libro.autor or not libro.autor.strip():
-            raise ValueError("autor invalido")
+            raise ValueError("Autor inválido")
         if not str(libro.anio).isdigit():
-            raise ValueError("año invalido")
+            raise ValueError("Año inválido")
         if not libro.categoria or not libro.categoria.strip():
-            raise ValueError("categoria invalida")
+            raise ValueError("Categoria inválida")
     
     def insertar_al_inicio(self, libro):
         """insertara un libro al inicio de la lista
