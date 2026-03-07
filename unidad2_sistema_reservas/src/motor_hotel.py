@@ -1,146 +1,108 @@
-class Habitacion:
-    """
-    Clase para manejar los datos de cada cuarto del hotel
-    """
-    def __init__(self, numero, tipo, precio):
-        self.numero = numero
-        self.tipo = tipo
-        self.precio = precio
-        self.disponible = True
+"""
+Sistema de Gestión de Reservas de Hotel.
+Este módulo maneja la lógica de reservaciones utilizando una pila personalizada.
+"""
 
-    def __str__(self):
-        estado = "Libre" if self.disponible else "No disponible"
-        return f"Habitacion {self.numero} | {self.tipo} - Precio : ${self.precio} - {estado}"
-
-    def __repr__(self):
-        return self.__str__()
-
-
-class Reserva:
-    """
-    Gestiona la vinculacion entre un cliente, una habitacion y una fecha especifica
-    """
-    def __init__(self, id_reserva, habitacion, fecha, cliente):
-        self.id_reserva = id_reserva
-        self.habitacion = habitacion
-        self.fecha = fecha
-        self.cliente = cliente
-
-    def __str__(self):
-        return f"Reserva #{self.id_reserva}: Por el cliente {self.cliente} en la habitacion {self.habitacion.numero} el dia {self.fecha}"
-
-    def __repr__(self):
-        return self.__str__()
+from modelos import Habitacion, Reserva
+from pila import PilaPersonalizada
 
 
 class MotorHotel:
     """
-    Motor del sistema de reservas del hotel
-    Usando dos pilas:
-    - pila_reservas_actuales
-    - pila_deshacer
+    Controlador principal para las operaciones del hotel.
     """
 
     def __init__(self):
-        self.pila_reservas_actuales = []
-        self.pila_deshacer = []
+        # Punto 2: Instanciar pilas con capacidad de 20
+        self.pila_reservas_actuales = PilaPersonalizada(capacidad=20)
+        self.pila_deshacer = PilaPersonalizada(capacidad=20)
+        
+        # Punto 4: Inicialización obligatoria de habitaciones
+        self.habitaciones = [
+            Habitacion(101, "Simple", 500.0),
+            Habitacion(102, "Simple", 500.0),
+            Habitacion(201, "Doble", 800.0),
+            Habitacion(202, "Doble", 800.0),
+            Habitacion(301, "Suite", 1500.0),
+            Habitacion(302, "Suite", 1500.0)
+        ]
         self.contador_reservas = 1
 
     def reservar_habitacion(self, habitacion, fecha, cliente):
-
+        """
+        Registra una nueva reserva validando la integridad de los datos.
+        """
+        # Validación: El objeto debe ser de tipo Habitacion (evita AttributeError)
         if not isinstance(habitacion, Habitacion):
             print("Error: el objeto habitacion no es valido.")
             return
 
-        if not isinstance(cliente, str):
+        # Validación: El nombre debe ser texto y no estar vacío
+        if not isinstance(cliente, str) or not cliente.strip():
             print("Error: el nombre del cliente debe ser texto.")
             return
 
-        cliente = cliente.strip()
-
-        if not cliente.replace(" ", "").isalpha():
+        # Validación: Solo letras y espacios (bloquea símbolos y números)
+        cliente_limpio = cliente.strip()
+        if not cliente_limpio.replace(" ", "").isalpha():
             print("Error: el nombre del cliente solo debe contener letras.")
             return
 
-        if not isinstance(fecha, str):
-            print("Error: la fecha debe ser texto.")
-            return
-
-        fecha = fecha.strip()
-
-        if fecha == "":
+        # Validación: La fecha no puede ser nula o solo espacios
+        if not isinstance(fecha, str) or not fecha.strip():
             print("Error: la fecha no puede estar vacia.")
             return
 
+        # Validación: Estado de la habitación
         if not habitacion.disponible:
-            print("Error: La habitacion no esta disponible.")
+            print(f"Error: La habitacion {habitacion.numero} no esta disponible.")
             return
 
-        reserva = Reserva(self.contador_reservas, habitacion, fecha, cliente)
+        # Crear instancia de Reserva
+        nueva_reserva = Reserva(
+            self.contador_reservas, 
+            habitacion, 
+            fecha, 
+            cliente_limpio
+        )
 
-        self.pila_reservas_actuales.append(reserva)
-
+        # Punto 3: Usar .push() en lugar de .append()
+        self.pila_reservas_actuales.push(nueva_reserva)
+        
+        # Actualizar estado y limpiar historial de deshacer
         habitacion.disponible = False
-
-        self.pila_deshacer.clear()
+        self.pila_deshacer = PilaPersonalizada(capacidad=20)
 
         self.contador_reservas += 1
-
         print("Reserva realizada correctamente")
-        print(reserva)
+        print(nueva_reserva)
 
     def cancelar_reserva(self):
         """
-        Cancelar la ultima reserva (estructura tipo pila)
+        Mueve la última reserva de la pila actual a la pila de deshacer.
         """
-
-        if not self.pila_reservas_actuales:
+        # Punto 3: Usar .is_empty()
+        if self.pila_reservas_actuales.is_empty():
             print("No hay reservas para cancelar.")
             return
 
+        # Punto 3: Usar .pop()
         reserva = self.pila_reservas_actuales.pop()
-
         reserva.habitacion.disponible = True
+        self.pila_deshacer.push(reserva)
 
-        self.pila_deshacer.append(reserva)
-
-        print("Reserva cancelada")
-        print(reserva)
+        print(f"Reserva #{reserva.id_reserva} cancelada")
 
     def deshacer_cancelacion(self):
         """
-        Recupera la ultima reserva cancelada
+        Recupera la última reserva cancelada.
         """
-
-        if not self.pila_deshacer:
+        if self.pila_deshacer.is_empty():
             print("No hay acciones para deshacer.")
             return
 
         reserva = self.pila_deshacer.pop()
-
         reserva.habitacion.disponible = False
+        self.pila_reservas_actuales.push(reserva)
 
-        self.pila_reservas_actuales.append(reserva)
-
-        print("Cancelacion deshecha:")
-        print(reserva)
-
-    def mostrar_reservas(self):
-        """
-        Muestra todas las reservas activas
-        """
-
-        print("\nReservas actuales:")
-
-        if not self.pila_reservas_actuales:
-            print("No hay reservas activas.")
-            return
-
-        for reserva in self.pila_reservas_actuales:
-            print(reserva)
-
-    def total_reservas(self):
-        """
-        Devuelve el numero total de reservas activas
-        """
-        return len(self.pila_reservas_actuales)
+        print(f"Cancelacion deshecha: Reserva #{reserva.id_reserva}")
