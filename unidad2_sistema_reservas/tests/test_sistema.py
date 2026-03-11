@@ -47,15 +47,14 @@ class TestSistemaReservasHotel(unittest.TestCase):
 
     def test_habitaciones_agotadas(self):
         """
-        Prueba el comportamiento cuando no hay habitaciones disponibles.
+        Prueba el comportamiento cuando el hotel está totalmente lleno.
         """
-        clientes = [f"Cliente{i}" for i in range(1, 8)]
+        tipos = ["Simple", "Simple", "Doble", "Doble", "Suite", "Suite"]
+        for i, tipo in enumerate(tipos):
+            # Cambiado a nombre sin números para cumplir con isalpha()
+            self.hotel.reservar_habitacion("ClienteInvitado", "2025-12-01", tipo)
 
-        for i, cliente in enumerate(clientes[:6], 1):
-            fecha = f"2025-12-{i+24:02d}"
-            self.hotel.reservar_habitacion(cliente, fecha)
-
-        resultado = self.hotel.reservar_habitacion("Cliente Extra", "2025-12-31")
+        resultado = self.hotel.reservar_habitacion("ClienteExtra", "2025-12-01", "Simple")
         self.assertFalse(resultado)
 
     def test_cancelacion_exitosa(self):
@@ -183,10 +182,12 @@ def ejecutar_pruebas():
     """
     print("Ejecutando pruebas unitarias...")
     print("="*50)
-
+    
+    loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestSistemaReservasHotel))
-    suite.addTest(unittest.makeSuite(TestPilaPersonalizada))
+    
+    suite.addTests(loader.loadTestsFromTestCase(TestSistemaReservasHotel))
+    suite.addTests(loader.loadTestsFromTestCase(TestPilaPersonalizada))
 
     runner = unittest.TextTestRunner(verbosity=2)
     resultado = runner.run(suite)
@@ -200,3 +201,5 @@ def ejecutar_pruebas():
     else:
         print("Algunas pruebas fallaron.")
 
+if __name__ == "__main__":
+    ejecutar_pruebas()
