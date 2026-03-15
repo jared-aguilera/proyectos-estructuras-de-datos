@@ -15,8 +15,20 @@ class TestSistemaReservasHotel(unittest.TestCase):
 
     def setUp(self):
         """
-        Configuración inicial para cada prueba.
+        Configuración inicial para cada prueba: Borramos el archivo de datos
+        para que los tests siempre empiecen desde cero.
         """
+        # Obtenemos la ruta del archivo de datos
+        base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        file_path = os.path.join(base_path, "data", "reservas.json")
+        
+        # Si el archivo existe, lo borramos temporalmente para el test
+        if os.path.exists(file_path):
+            try:
+                os.remove(file_path)
+            except:
+                pass # Evita errores si el archivo está bloqueado
+            
         self.hotel = SistemaReservasHotel()
 
     def test_inicializacion_sistema(self):

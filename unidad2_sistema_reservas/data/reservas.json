@@ -1,0 +1,38 @@
+{
+    "contador": 2,
+    "habitaciones": [
+        {
+            "numero": 101,
+            "disponible": false
+        },
+        {
+            "numero": 102,
+            "disponible": true
+        },
+        {
+            "numero": 201,
+            "disponible": true
+        },
+        {
+            "numero": 202,
+            "disponible": true
+        },
+        {
+            "numero": 301,
+            "disponible": true
+        },
+        {
+            "numero": 302,
+            "disponible": true
+        }
+    ],
+    "reservas": [
+        {
+            "id": 1,
+            "cliente": "Test Cliente",
+            "fecha": "2025-12-25",
+            "noches": 1,
+            "hab_numero": 101
+        }
+    ]
+}
