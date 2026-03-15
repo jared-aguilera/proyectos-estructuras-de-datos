@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 class Habitacion:
     """
     Clase para manejar los datos de cada cuarto del hotel
@@ -38,4 +36,3 @@ class Reserva:
     
     def __repr__(self):
         return self.__str__()
->>>>>>> Stashed changes

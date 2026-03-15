@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 """
 Sistema de Gestión de Reservas de Hotel.
 Este módulo maneja la lógica de reservaciones utilizando una pila personalizada.
@@ -184,4 +182,3 @@ class SistemaReservasHotel:
                 self.pila_reservas_actuales.push(nueva_r)
         except Exception:
             pass
->>>>>>> Stashed changes

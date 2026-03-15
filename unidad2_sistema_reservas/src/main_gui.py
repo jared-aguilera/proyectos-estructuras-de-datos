@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import customtkinter as ctk
 from tkinter import messagebox
 from tkcalendar import DateEntry
@@ -204,4 +202,3 @@ class AppHotel(ctk.CTk):
 if __name__ == "__main__":
     app = AppHotel()
     app.mainloop()
->>>>>>> Stashed changes
