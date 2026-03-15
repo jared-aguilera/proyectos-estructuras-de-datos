@@ -113,7 +113,20 @@ class GestionHospital:
                     "hora_atencion": getattr(p, "hora_atencion", None)
                 }
                 for p in self.historial
-            ]
+            ],
+            # Se guardan las colas activas por departamento
+            "colas_activas": {
+                depto: [
+                    {
+                        "nombre": p.nombre,
+                        "prioridad": p.prioridad,
+                        "departamento": p.departamento,
+                        "hora_llegada": p.hora_llegada
+                    }
+                    for p in cola.items  # Accedemos a la deque
+                ]
+                for depto, cola in self.departamentos.items()
+            }
         }
 
         with open(archivo, "w") as f:
@@ -146,5 +159,18 @@ class GestionHospital:
 
                 self.historial.append(paciente)
 
+            # Cargamos las colas de espera (Pendientes)
+            colas_activas = datos.get("colas_activas", {})
+            for depto, lista_pacientes in colas_activas.items():
+                if depto in self.departamentos:
+                    for p_data in lista_pacientes:
+                        paciente = Paciente(
+                            p_data["nombre"],
+                            p_data["prioridad"],
+                            p_data["departamento"]
+                        )
+                        paciente.hora_llegada = p_data["hora_llegada"]
+                        self.departamentos[depto].enqueue(paciente)
+                        
         except:
             pass
