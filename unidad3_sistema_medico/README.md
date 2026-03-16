@@ -1,7 +1,7 @@
 # Sistema de Gestión de Atención Médica - Unidad 3 (Colas)
 
 ## Descripción
-Este proyecto consiste en un sistema profesional para la gestión de flujos de pacientes en un entorno hospitalario desarrollado en Python[cite: 143]. El núcleo del sistema utiliza una **Estructura de Datos de Cola de Prioridad** implementada con `deques` para garantizar que las emergencias médicas reciban atención inmediata mientras se respeta el orden de llegada para los casos regulares.
+Este proyecto consiste en un sistema profesional para la gestión de flujos de pacientes en un entorno hospitalario desarrollado en Python. El núcleo del sistema utiliza una **Estructura de Datos de Cola de Prioridad** implementada con `deques` para garantizar que las emergencias médicas reciban atención inmediata mientras se respeta el orden de llegada para los casos regulares.
 
 ## Características Principales
 * **Cola de Prioridad Dual**: Implementación de una estructura que gestiona dos colas internas (emergencias y regulares) para priorizar turnos de forma automatizada.
