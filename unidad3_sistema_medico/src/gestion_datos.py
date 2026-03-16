@@ -5,8 +5,8 @@ Gestion de departamentos y persistencia de datos del hospital.
 import json
 import os
 import time
-from motor_medico import Paciente, ColaPrioridad
-
+from .motor_medico import ColaPrioridad
+from .modelos import Paciente
 
 class GestionHospital:
 
