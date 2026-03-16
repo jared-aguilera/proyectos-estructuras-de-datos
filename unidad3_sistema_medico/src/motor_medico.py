@@ -1,6 +1,6 @@
 import time
 from collections import deque
-from .modelos import Paciente
+from modelos import Paciente
 
 class ColaPrioridad:
     '''Gestiona dos colasa internas para priorizar emergencias sobre casos regulares'''
