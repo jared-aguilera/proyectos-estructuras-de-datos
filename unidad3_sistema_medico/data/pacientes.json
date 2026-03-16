@@ -1,0 +1,57 @@
+{
+    "historial": [
+        {
+            "nombre": "A",
+            "prioridad": 2,
+            "departamento": "urgencias",
+            "hora_llegada": 1773631612.151506,
+            "hora_atencion": 1773631612.152912
+        },
+        {
+            "nombre": "B",
+            "prioridad": 2,
+            "departamento": "urgencias",
+            "hora_llegada": 1773631612.1520362,
+            "hora_atencion": 1773631612.1533883
+        },
+        {
+            "nombre": "C",
+            "prioridad": 2,
+            "departamento": "urgencias",
+            "hora_llegada": 1773631612.1525478,
+            "hora_atencion": 1773631612.153701
+        },
+        {
+            "nombre": "Pedro",
+            "prioridad": 1,
+            "departamento": "urgencias",
+            "hora_llegada": 1773631612.1774247,
+            "hora_atencion": 1773631612.1781614
+        },
+        {
+            "nombre": "Juan",
+            "prioridad": 2,
+            "departamento": "urgencias",
+            "hora_llegada": 1773631612.1747687,
+            "hora_atencion": 1773631612.194232
+        }
+    ],
+    "colas_activas": {
+        "urgencias": [
+            {
+                "nombre": "Maria",
+                "prioridad": 2,
+                "departamento": "urgencias",
+                "hora_llegada": 1773631612.1769662
+            },
+            {
+                "nombre": "Luis",
+                "prioridad": 2,
+                "departamento": "urgencias",
+                "hora_llegada": 1773631612.1936677
+            }
+        ],
+        "pediatria": [],
+        "medicina_general": []
+    }
+}
