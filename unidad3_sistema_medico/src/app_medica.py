@@ -237,7 +237,7 @@ class AppMedica(ctk.CTk):
             messagebox.showerror("Validacion", mensaje)
 
     def reservar(self):
-        """Construye la hora desde los selectores y agenda la cita[cite: 12, 412]."""
+        """Construye la hora desde los selectores y agenda la cita."""
         nombre = self.entry_nombre.get().strip()
         # Construimos el formato HH:MM desde los dropdowns
         hora_citada = f"{self.combo_hora.get()}:{self.combo_min.get()}"
@@ -258,7 +258,7 @@ class AppMedica(ctk.CTk):
         paciente = self.hospital.atender_paciente(depto_key)
         
         if paciente:
-            # Notificación visual para el paciente [cite: 10-11, 411]
+            # Notificación visual para el paciente
             messagebox.showinfo(
                 "Notificación", 
                 f"Paciente {paciente.nombre} favor de pasar a {self.DEPTOS_DISPLAY[depto_key]}."
