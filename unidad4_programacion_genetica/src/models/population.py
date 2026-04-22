@@ -6,20 +6,21 @@ class Population:
     def __init__(self, size, max_depth_init):
         self.size = size
         self.max_depth_init = max_depth_init
-        self.invididuals = []
+        self.individuals = []
 
     def generar_arbol_recursivo(self, funciones, terminales, depth, method = "grow"):
         #condicion e parada: prfundidad 0 o azar en modo 'grow'
         if depth <= 0 or (method =="grow" and random.random() < 0.15):
             val = random.choice(terminales)
+            return Nodo(val)
 
         #seleccionar funcion
         func = random.choice(funciones)
 
         #operadores binarios(requieren izq y der)
         if func in [ '+', '-', '*', '/']:
-            izq = self.generar_srbol_recursivo(funciones, terminales, depth - 1, method)
-            der = self.generar_srbol_recursivo(funciones, terminales, depth - 1, method)
+            izq = self.generar_arbol_recursivo(funciones, terminales, depth - 1, method)
+            der = self.generar_arbol_recursivo(funciones, terminales, depth - 1, method)
             return Nodo(func, izq, der)
         #operadores unitarios(solo izq)
         else:
