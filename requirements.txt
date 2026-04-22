@@ -1,0 +1,21 @@
+# --- Unidad 1, 2, 3: ---
+customtkinter
+tkcalendar
+
+# --- Unidad 4: Programación Genética ---
+numpy
+pandas
+fastapi
+uvicorn
+gplearn
+
+# --- Utilidades extra ---
+pydantic
+
+# Pasos para que funcione correctamente:
+# 1 - Escribir en la terminal:
+# python -m venv venv
+# 2 - Activar el entorno:
+# .\venv\Scripts\activate
+# 3 - Instalar todo:
+# pip install -r requirements.txt

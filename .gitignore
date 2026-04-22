@@ -3,6 +3,7 @@ __pycache__/
 
 *.json
 *.txt
+!requirements.txt
 
 !.gitkeep
 
