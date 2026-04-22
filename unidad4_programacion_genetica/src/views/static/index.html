@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Genética</title>
+    <link rel="icon" type="image/png" href="/static/css/favicon.png">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Unidad 4 - Programación Genética</h1>
+            <p>Herramienta de búsqueda de fórmulas matemáticas mediante algoritmos evolutivos para el análisis y predicción de datos.</p>
+        </header>
+
+        <main>
+            <section class="config-card">
+                <h2>Configuración</h2>
+                <div class="dataset-selector">
+                    <select id="dataset">
+                        <option value="concrete">Concrete</option>
+                        <option value="housing">Housing</option>
+                        <option value="yacht">Yacht</option>
+                        <option value="tower">Tower</option>
+                        <option value="energy_cooling">Energy Cooling</option>
+                        <option value="energy_heating">Energy Heating</option>
+                    </select>
+                    <button id="btn-run">Iniciar Evolución</button>
+                    <button id="btn-gplearn" class="btn-alt">Comparativa gplearn</button>
+                </div>
+            </section>
+
+            <div class="grid-layout">
+                <section class="results">
+                    <div class="card">
+                        <h3>Mejor Individuo (Propio)</h3>
+                        <div id="formula" class="formula-box">Esperando datos...</div>
+                        <div class="stats-row">
+                            <p>MSE: <span id="mse-val">--</span></p>
+                            <p>Generación: <span id="gen-val">0</span>/50</p>
+                            <p>Tiempo: <span id="time-val">--</span>s</p>
+                        </div>
+                    </div>
+
+                    <div id="gplearn-card" class="card hidden">
+                        <h3>Resultado gplearn</h3>
+                        <div id="gp-formula" class="formula-box gp">--</div>
+                        <div class="stats-row">
+                            <p>MSE: <span id="gp-mse">--</span></p>
+                            <p>Tiempo: <span id="gp-time">--</span>s</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="terminal-container">
+                    <h3>Terminal de Salida</h3>
+                    <div id="terminal" class="terminal-box">
+                        <span class="prompt">> Motor listo. Selecciona un dataset...</span>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

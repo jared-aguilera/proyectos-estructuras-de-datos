@@ -26,3 +26,6 @@ Sistema para la recepción de un hotel que permite apartar habitaciones por fech
 
 ### unidad3_sistema_medico
 Sistema de gestión de atención médica que optimiza el flujo de pacientes mediante colas de prioridad, permitiendo la atención inmediata de emergencias, el agendamiento de citas futuras y el seguimiento de estadísticas de eficiencia operativa.
+
+### unidad4_programacion_genetica
+Herramienta de búsqueda de fórmulas matemáticas que analiza conjuntos de datos mediante algoritmos evolutivos, permitiendo encontrar la ecuación que mejor describe la relación entre las variables para predecir resultados con precisión.
