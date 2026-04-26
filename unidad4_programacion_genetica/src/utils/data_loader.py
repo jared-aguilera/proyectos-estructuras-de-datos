@@ -20,7 +20,10 @@ class DataLoader:
         else:
             raise FileNotFoundError(f"No se encontro {nombre_dataset} en data/")
         
-        # limpieza de valores nulos
+        # limpieza de columnas vacías generadas por comas extra al final
+        df = df.dropna(axis=1, how='all')
+        
+        # limpieza de valores nulos reales en las filas
         df = df.dropna()
 
         # X son todas las columnas menos la ultima, y es la ultima columna

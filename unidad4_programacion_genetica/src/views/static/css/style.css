@@ -2,7 +2,7 @@
     --bg: #0f172a;
     --card: #1e293b;
     --text: #f8fafc;
-    --accent: #ef4444; /* Rojo para el acento solicitado */
+    --accent: #ef4444;
     --accent-hover: #dc2626;
     --terminal-bg: #000000;
     --terminal-text: #4ade80;
@@ -59,14 +59,62 @@ select {
     cursor: pointer;
 }
 
-/* Layout en Rejilla */
+input[type="file"] {
+    background: var(--bg);
+    color: white;
+    border: 1px dashed var(--accent);
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* Hiperparametros */
+.hyperparams-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #334155;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    cursor: help;
+}
+
+.input-group input {
+    width: 80px;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background: var(--bg);
+    color: white;
+    border: 1px solid #334155;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
 .grid-layout {
     display: grid;
     grid-template-columns: 1fr 400px;
     gap: 20px;
 }
 
-/* Cards de Resultados */
+.grid-layout > * {
+    min-width: 0;
+}
+
 .card {
     background: var(--card);
     padding: 20px;
@@ -89,7 +137,7 @@ select {
 }
 
 .gp {
-    color: #38bdf8; /* Color azul para diferenciar gplearn */
+    color: #38bdf8;
 }
 
 .stats-row {
@@ -100,7 +148,6 @@ select {
     color: #94a3b8;
 }
 
-/* Terminal Estilo VSC */
 .terminal-container h3 {
     margin-bottom: 10px;
 }
@@ -118,9 +165,18 @@ select {
     line-height: 1.6;
 }
 
-.log-success { color: #4ade80; }
-.log-info { color: #94a3b8; }
-.log-error { color: #f87171; font-weight: bold; }
+.log-success {
+    color: #4ade80;
+}
+
+.log-info {
+    color: #94a3b8;
+}
+
+.log-error {
+    color: #f87171;
+    font-weight: bold;
+}
 
 /* Botones */
 button {
@@ -157,6 +213,65 @@ button:disabled {
     display: none;
 }
 
+/* AST Visualizer */
+.ast-details {
+    background: var(--card);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+}
+
+.ast-details summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--accent);
+    outline: none;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.canvas-wrapper {
+    width: 100%;
+    overflow: hidden;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #333;
+    cursor: grab;
+}
+
+.canvas-wrapper:active {
+    cursor: grabbing;
+}
+
+/* Chart Container */
+.chart-details {
+    background: var(--card);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3);
+}
+
+.chart-details summary {
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--primary);
+    outline: none;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+}
+
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #333;
+    padding: 10px;
+    box-sizing: border-box;
+}
 /* Scrollbar para la terminal */
 .terminal-box::-webkit-scrollbar {
     width: 8px;
@@ -169,4 +284,57 @@ button:disabled {
 .terminal-box::-webkit-scrollbar-thumb {
     background: #333;
     border-radius: 4px;
+}
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Tooltip de ayuda */
+.config-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.help-icon {
+    background-color: var(--accent);
+    color: white;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    cursor: help;
+    position: relative;
+}
+
+.help-tooltip {
+    display: none;
+    position: absolute;
+    top: 35px;
+    right: 0;
+    width: 300px;
+    background-color: var(--card);
+    color: var(--text);
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    font-size: 0.85rem;
+    font-weight: normal;
+    z-index: 100;
+    line-height: 1.4;
+}
+
+.help-icon:hover .help-tooltip {
+    display: block;
 }

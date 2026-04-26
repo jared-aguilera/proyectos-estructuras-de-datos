@@ -27,7 +27,7 @@ class Nodo:
             elif self.valor == '*':
                 res = izq_val * der_val
             elif self.valor == '/':
-                # proteccion oficial del pdf: si |b| < 1e-10 regresa 1.0 [cite: 23]
+                # proteccion oficial del pdf: si |b| < 1e-10 regresa 1.0
                 condicion = np.abs(der_val) < 1e-10
                 res = np.where(condicion, 1.0, izq_val / np.where(condicion, 1.0, der_val))
             elif self.valor == 'sin':
@@ -35,11 +35,11 @@ class Nodo:
             elif self.valor == 'cos':
                 res = np.cos(izq_val)
             elif self.valor == 'log':
-                # proteccion oficial: log(|x|) y evitar log(0) [cite: 24]
+                # proteccion oficial: log(|x|) y evitar log(0)
                 val_abs = np.abs(izq_val)
                 res = np.log(np.where(val_abs < 1e-10, 1.0, val_abs))
             elif self.valor == 'sqrt':
-                # proteccion oficial: usar valor absoluto [cite: 25]
+                # proteccion oficial: usar valor absoluto
                 res = np.sqrt(np.abs(izq_val))
             elif self.valor == 'exp':
                 # proteccion extra: evitar que exp explote a infinito
@@ -47,7 +47,7 @@ class Nodo:
             else:
                 return 0.0
             
-            # limpieza de NaNs e Infs para que el MSE no sea 'nan' [cite: 60]
+            # limpieza de NaNs e Infs para que el MSE no sea 'nan'
             return np.nan_to_num(res, nan=0.0, posinf=1e10, neginf=-1e10)
             
         except:
@@ -67,9 +67,18 @@ class Nodo:
         return conteo
 
     def __str__(self):
-        """representacion de la formula para el dashboard [cite: 48]"""
+        """representacion de la formula para el dashboard"""
         if self.izquierda is None and self.derecha is None:
             return str(self.valor)
         if self.derecha is None:
             return f"{self.valor}({self.izquierda})"
         return f"({self.izquierda} {self.valor} {self.derecha})"
+
+    def to_dict(self):
+        """serializa el nodo para ser dibujado en Javascript"""
+        data = {"valor": str(self.valor)}
+        if self.izquierda:
+            data["izq"] = self.izquierda.to_dict()
+        if self.derecha:
+            data["der"] = self.derecha.to_dict()
+        return data

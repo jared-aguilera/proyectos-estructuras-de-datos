@@ -1,22 +1,39 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Programación Genética</title>
     <link rel="icon" type="image/png" href="/static/css/favicon.png">
     <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <div class="container">
         <header>
             <h1>Unidad 4 - Programación Genética</h1>
-            <p>Herramienta de búsqueda de fórmulas matemáticas mediante algoritmos evolutivos para el análisis y predicción de datos.</p>
+            <p>Herramienta de búsqueda de fórmulas matemáticas mediante algoritmos evolutivos para el análisis y
+                predicción de datos.</p>
         </header>
 
         <main>
             <section class="config-card">
-                <h2>Configuración</h2>
+                <div class="config-header">
+                    <h2>Configuración</h2>
+                    <div class="help-icon">
+                        ?
+                        <div class="help-tooltip">
+                            <strong>Generaciones:</strong> Vueltas que dará el algoritmo. Más = más precisión pero mayor
+                            tamaño (Bloat).<br><br>
+                            <strong>Población:</strong> Árboles vivos por vuelta. Más = mayor exploración.<br><br>
+                            <strong>P. Cruce:</strong> Probabilidad de mezclar padres. Causa principal de Bloat.<br><br>
+                            <strong>P. Mutación:</strong> Probabilidad de cambios al azar. Mantiene diversidad.<br><br>
+                            <strong>T. Torneo:</strong> Cuántos compiten para reproducirse. Menor = más variedad.
+                        </div>
+                    </div>
+                </div>
                 <div class="dataset-selector">
                     <select id="dataset">
                         <option value="concrete">Concrete</option>
@@ -25,9 +42,45 @@
                         <option value="tower">Tower</option>
                         <option value="energy_cooling">Energy Cooling</option>
                         <option value="energy_heating">Energy Heating</option>
+                        <option value="custom">Subir Dataset Propio...</option>
                     </select>
+                    <input type="file" id="file-upload" accept=".csv,.data" class="hidden" style="display: none;">
                     <button id="btn-run">Iniciar Evolución</button>
                     <button id="btn-gplearn" class="btn-alt">Comparativa gplearn</button>
+                </div>
+
+                <div class="hyperparams-grid">
+                    <div class="input-group">
+                        <label for="hp-gens"
+                            title="Cuántas vueltas dará el algoritmo buscando soluciones">Generaciones</label>
+                        <input type="number" id="hp-gens" placeholder="50" min="1" max="1000">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-pop" title="Cuántos árboles nacen en cada generación">Población</label>
+                        <input type="number" id="hp-pop" placeholder="500" min="10" max="5000">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-cross" title="Probabilidad de combinar dos padres (0.0 a 1.0)">P. Cruce</label>
+                        <input type="number" id="hp-cross" placeholder="0.9" min="0" max="1" step="0.05">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-mut" title="Probabilidad de mutación de subárbol (0.0 a 1.0)">P. Mutación</label>
+                        <input type="number" id="hp-mut" placeholder="0.1" min="0" max="1" step="0.05">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-tour" title="Cuántos árboles compiten para ser padres">T. Torneo</label>
+                        <input type="number" id="hp-tour" placeholder="7" min="2" max="100">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-init-depth" title="Profundidad máxima al inicializar la población">Prof.
+                            Inicial</label>
+                        <input type="number" id="hp-init-depth" placeholder="4" min="2" max="10">
+                    </div>
+                    <div class="input-group">
+                        <label for="hp-max-depth" title="Profundidad máxima permitida durante la evolución">Prof.
+                            Máx</label>
+                        <input type="number" id="hp-max-depth" placeholder="17" min="5" max="50">
+                    </div>
                 </div>
             </section>
 
@@ -37,19 +90,49 @@
                         <h3>Mejor Individuo (Propio)</h3>
                         <div id="formula" class="formula-box">Esperando datos...</div>
                         <div class="stats-row">
-                            <p>MSE: <span id="mse-val">--</span></p>
-                            <p>Generación: <span id="gen-val">0</span>/50</p>
+                            <p>MSE (Entr.): <span id="mse-val">--</span></p>
+                            <p>MSE (Prueba): <span id="mse-test-val" class="gp">--</span></p>
+                            <p>Generación: <span id="gen-val">0</span>/<span id="gen-total">50</span></p>
                             <p>Tiempo: <span id="time-val">--</span>s</p>
                         </div>
+
+                        <details class="chart-details" id="chart-container" style="display: none;" open>
+                            <summary>Ver Gráfica de Convergencia</summary>
+                            <div class="chart-wrapper">
+                                <canvas id="convergence-chart"></canvas>
+                            </div>
+                        </details>
+
+                        <details class="ast-details" id="ast-container" style="display: none;">
+                            <summary>Ver Árbol de Sintaxis Abstracta (AST)</summary>
+                            <div class="canvas-wrapper">
+                                <canvas id="ast-canvas" width="800" height="400"></canvas>
+                            </div>
+                        </details>
                     </div>
 
                     <div id="gplearn-card" class="card hidden">
                         <h3>Resultado gplearn</h3>
                         <div id="gp-formula" class="formula-box gp">--</div>
                         <div class="stats-row">
-                            <p>MSE: <span id="gp-mse">--</span></p>
+                            <p>MSE (Entr.): <span id="gp-mse-train">--</span></p>
+                            <p>MSE (Prueba): <span id="gp-mse-test" class="gp">--</span></p>
                             <p>Tiempo: <span id="gp-time">--</span>s</p>
                         </div>
+
+                        <details class="chart-details" id="chart-container-gp" style="display: none;" open>
+                            <summary>Ver Gráfica de Convergencia</summary>
+                            <div class="chart-wrapper">
+                                <canvas id="convergence-chart-gp"></canvas>
+                            </div>
+                        </details>
+
+                        <details class="ast-details" id="ast-container-gp" style="display: none;">
+                            <summary>Ver Árbol de Sintaxis Abstracta (AST)</summary>
+                            <div class="canvas-wrapper">
+                                <canvas id="ast-canvas-gp" width="800" height="400"></canvas>
+                            </div>
+                        </details>
                     </div>
                 </section>
 
@@ -64,4 +147,5 @@
     </div>
     <script src="/static/js/script.js"></script>
 </body>
+
 </html>
