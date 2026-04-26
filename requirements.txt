@@ -1,4 +1,4 @@
-# --- Unidad 1, 2, 3: ---
+# --- Unidad 1, 2, 3: (Interfaces Gráficas y Utilidades) ---
 customtkinter
 tkcalendar
 
@@ -6,12 +6,16 @@ tkcalendar
 numpy
 pandas
 fastapi
+python-multipart
 uvicorn
 gplearn
 
-# --- Utilidades extra ---
+# --- Utilidades extra (Reportes, PDF, Gráficas) ---
 pydantic
+PyPDF2
+matplotlib
 
+# =======================================================
 # Pasos para que funcione correctamente:
 # 1 - Escribir en la terminal:
 # python -m venv venv
