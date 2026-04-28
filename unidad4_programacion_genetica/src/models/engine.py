@@ -134,7 +134,7 @@ class GeneticEngine:
         poblacion = poblador.create_population(funciones, terminales)
         
         evaluador = Evaluador()
-
+        #Ciclo evolutivo 
         for gen in range(generaciones):
             # calculo de fitness (MSE) solo con el 70% de entrenamiento
             scores = [evaluador.obtener_fitness(ind, X_train, y_train) for ind in poblacion]
