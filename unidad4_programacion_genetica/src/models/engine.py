@@ -2,6 +2,7 @@ import numpy as np
 import random
 import copy
 import time
+from sklearn.model_selection import train_test_split
 from .nodo import Nodo
 
 class GeneticEngine:
@@ -106,7 +107,7 @@ class GeneticEngine:
         mejor_idx = np.argmin(fitness_scores)
         return self.clonar_individuo(poblacion[mejor_idx])
     
-    def ejecutar_evolucion(self, dataset_name, generaciones=50, tam_poblacion=500, max_depth_init=4):
+    def ejecutar_evolucion(self, dataset_name, generaciones=50, tam_poblacion=500, max_depth_init=4, metric="mse"):
         """flujo principal que ahora emite progreso en tiempo real"""
         from src.utils.data_loader import DataLoader
         from src.models.population import Population
@@ -117,13 +118,8 @@ class GeneticEngine:
         loader = DataLoader()
         X, y = loader.cargar_dataset(dataset_name)
         
-        # division 70-30 (Train/Test) manual con numpy pura
-        rng = np.random.RandomState(42) # Semilla local solo para la particion
-        indices = rng.permutation(len(X))
-        corte = int(len(X) * 0.7)
-        train_idx, test_idx = indices[:corte], indices[corte:]
-        X_train, y_train = X[train_idx], y[train_idx]
-        X_test, y_test = X[test_idx], y[test_idx]
+        # AQUI YA SE HACE LA division 70-30 (Train/Test) aleatoria con sklearn
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
         
         funciones = self.f_binarias + self.f_unitarias
         # terminales: variables Xn y constantes aleatorias [-1, 1]
@@ -136,8 +132,8 @@ class GeneticEngine:
         evaluador = Evaluador()
         #Ciclo evolutivo 
         for gen in range(generaciones):
-            # calculo de fitness (MSE) solo con el 70% de entrenamiento
-            scores = [evaluador.obtener_fitness(ind, X_train, y_train) for ind in poblacion]
+            # calculo de fitness (Metrica elegida) solo con el 70% de entrenamiento
+            scores = [evaluador.obtener_fitness(ind, X_train, y_train, metric) for ind in poblacion]
             mejor_idx = np.argmin(scores)
             mejor_mse = scores[mejor_idx]
             mejor_individuo = poblacion[mejor_idx]
@@ -174,7 +170,7 @@ class GeneticEngine:
         total_time = round(time.time() - start_time, 4)
         
         # Evaluacion final contra el 30% nunca visto
-        mse_test_val = evaluador.obtener_fitness(mejor_individuo, X_test, y_test)
+        mse_test_val = evaluador.obtener_fitness(mejor_individuo, X_test, y_test, metric)
         
         yield {
             "final": True,
@@ -184,16 +180,31 @@ class GeneticEngine:
         }
     
 class Evaluador:
-    def calcular_mse(self, y_real, y_predicho):
-        """calcula el error cuadratico medio estandar con proteccion"""
+    def calcular_error(self, y_real, y_predicho, metrica):
+        """calcula el error segun la metrica elegida (El 'IF' del profe)"""
         try:
-            error = np.mean(np.square(y_real - y_predicho))
+            # Proteccion contra nans
+            y_predicho = np.nan_to_num(y_predicho, nan=0.0, posinf=1e10, neginf=-1e10)
+            
+            if metrica == "mse":
+                error = np.mean(np.square(y_real - y_predicho))
+            elif metrica == "rmse":
+                error = np.sqrt(np.mean(np.square(y_real - y_predicho)))
+            elif metrica == "mae":
+                error = np.mean(np.abs(y_real - y_predicho))
+            elif metrica == "mape":
+                # Proteccion division por cero en MAPE
+                denominador = np.where(np.abs(y_real) < 1e-10, 1.0, y_real)
+                error = np.mean(np.abs((y_real - y_predicho) / denominador)) * 100
+            else:
+                error = np.mean(np.square(y_real - y_predicho)) # Default MSE
+                
             return error if np.isfinite(error) else 1e15
         except:
             return 1e15
 
-    def obtener_fitness(self, arbol, X, y_real):
+    def obtener_fitness(self, arbol, X, y_real, metrica="mse"):
         """conecta el arbol con el calculo de error"""
         y_predicho = arbol.evaluar(X)
-        fitness = self.calcular_mse(y_real, y_predicho)
+        fitness = self.calcular_error(y_real, y_predicho, metrica)
         return fitness

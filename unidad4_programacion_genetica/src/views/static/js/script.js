@@ -180,6 +180,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Evento para cambiar etiquetas segun la metrica
+    document.getElementById('hp-metric').addEventListener('change', function() {
+        const label = this.options[this.selectedIndex].text.split(' ')[0];
+        document.querySelectorAll('.metric-label').forEach(el => el.innerText = label);
+        document.querySelectorAll('.metric-label-gp').forEach(el => el.innerText = label);
+        
+        convergenceChart.data.datasets[0].label = `Error (${label})`;
+        convergenceChart.options.scales.y.title.text = label;
+        convergenceChart.update();
+        
+        convergenceChartGP.data.datasets[0].label = `Error GPLearn (${label})`;
+        convergenceChartGP.options.scales.y.title.text = label;
+        convergenceChartGP.update();
+    });
+
     const ctxChartGP = document.getElementById('convergence-chart-gp').getContext('2d');
     let convergenceChartGP = new Chart(ctxChartGP, {
         type: 'line',
@@ -255,7 +270,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const tourStr = document.getElementById('hp-tour').value;
         const initDepthStr = document.getElementById('hp-init-depth').value;
         const maxDepthStr = document.getElementById('hp-max-depth').value;
-
+        const metric = document.getElementById('hp-metric').value;
+        
         const gens = gensStr !== '' ? parseInt(gensStr) : 50;
         const pop = popStr !== '' ? parseInt(popStr) : 500;
         const cross = crossStr !== '' ? parseFloat(crossStr) : 0.9;
@@ -281,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
 
-        return `?gens=${gens}&pop=${pop}&cross=${cross}&mut=${mut}&tour=${tour}&init_depth=${initDepth}&max_depth=${maxDepth}`;
+        return `?gens=${gens}&pop=${pop}&cross=${cross}&mut=${mut}&tour=${tour}&init_depth=${initDepth}&max_depth=${maxDepth}&metric=${metric}`;
     }
 
     async function handleUpload() {
@@ -374,7 +390,8 @@ document.addEventListener('DOMContentLoaded', () => {
             convergenceChart.data.datasets[0].data.push(data.mse);
             convergenceChart.update();
             
-            logToTerminal(`Generación ${data.gen}: MSE = ${data.mse.toFixed(4)}`, 'success');
+            const metricLabel = document.getElementById('hp-metric').options[document.getElementById('hp-metric').selectedIndex].text.split(' ')[0];
+            logToTerminal(`Generación ${data.gen}: ${metricLabel} = ${data.mse.toFixed(4)}`, 'success');
         };
 
         eventSource.onerror = () => {

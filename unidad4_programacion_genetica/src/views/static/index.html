@@ -81,6 +81,15 @@
                             Máx</label>
                         <input type="number" id="hp-max-depth" placeholder="17" min="5" max="50">
                     </div>
+                    <div class="input-group">
+                        <label for="hp-metric" title="Métrica utilizada para evaluar la aptitud (Fitness)">Métrica</label>
+                        <select id="hp-metric">
+                            <option value="mse">MSE (Cuadrático)</option>
+                            <option value="rmse">RMSE (Raíz)</option>
+                            <option value="mae">MAE (Absoluto)</option>
+                            <option value="mape">MAPE (Porcentaje)</option>
+                        </select>
+                    </div>
                 </div>
             </section>
 
@@ -90,8 +99,8 @@
                         <h3>Mejor Individuo (Propio)</h3>
                         <div id="formula" class="formula-box">Esperando datos...</div>
                         <div class="stats-row">
-                            <p>MSE (Entr.): <span id="mse-val">--</span></p>
-                            <p>MSE (Prueba): <span id="mse-test-val" class="gp">--</span></p>
+                            <p><span class="metric-label">Error</span> (Entr.): <span id="mse-val">--</span></p>
+                            <p><span class="metric-label">Error</span> (Prueba): <span id="mse-test-val" class="gp">--</span></p>
                             <p>Generación: <span id="gen-val">0</span>/<span id="gen-total">50</span></p>
                             <p>Tiempo: <span id="time-val">--</span>s</p>
                         </div>
@@ -115,8 +124,8 @@
                         <h3>Resultado gplearn</h3>
                         <div id="gp-formula" class="formula-box gp">--</div>
                         <div class="stats-row">
-                            <p>MSE (Entr.): <span id="gp-mse-train">--</span></p>
-                            <p>MSE (Prueba): <span id="gp-mse-test" class="gp">--</span></p>
+                            <p><span class="metric-label-gp">Error</span> (Entr.): <span id="gp-mse-train">--</span></p>
+                            <p><span class="metric-label-gp">Error</span> (Prueba): <span id="gp-mse-test" class="gp">--</span></p>
                             <p>Tiempo: <span id="gp-time">--</span>s</p>
                         </div>
 

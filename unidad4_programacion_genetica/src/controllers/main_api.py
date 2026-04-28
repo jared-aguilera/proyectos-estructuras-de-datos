@@ -9,6 +9,7 @@ import shutil
 from src.models.engine import GeneticEngine
 from gplearn.genetic import SymbolicRegressor
 from src.utils.data_loader import DataLoader
+from sklearn.model_selection import train_test_split
 import numpy as np
 
 app = FastAPI()
@@ -40,12 +41,12 @@ async def upload_dataset(file: UploadFile = File(...)):
         return {"status": "error", "message": str(e)}
 
 @app.get("/run-evolution/{dataset}")
-async def start_evolution(dataset: str, gens: int = 50, pop: int = 500, cross: float = 0.9, mut: float = 0.1, tour: int = 7, init_depth: int = 4, max_depth: int = 17):
+async def start_evolution(dataset: str, gens: int = 50, pop: int = 500, cross: float = 0.9, mut: float = 0.1, tour: int = 7, init_depth: int = 4, max_depth: int = 17, metric: str = "mse"):
     """Endpoint con streaming para ver la terminal en vivo"""
     engine = GeneticEngine(p_crossover=cross, p_mutation=mut, tournament_size=tour, max_depth=max_depth)
     
     def generate():
-        for data in engine.ejecutar_evolucion(dataset, generaciones=gens, tam_poblacion=pop, max_depth_init=init_depth):
+        for data in engine.ejecutar_evolucion(dataset, generaciones=gens, tam_poblacion=pop, max_depth_init=init_depth, metric=metric):
             # Formato SSE: 'data: {json}\n\n'
             yield f"data: {json.dumps(data)}\n\n"
             time.sleep(0.01) 
@@ -53,18 +54,12 @@ async def start_evolution(dataset: str, gens: int = 50, pop: int = 500, cross: f
     return StreamingResponse(generate(), media_type="text/event-stream")
 
 @app.get("/run-gplearn/{dataset}")
-async def run_gplearn(dataset: str, gens: int = 50, pop: int = 500, cross: float = 0.9, mut: float = 0.1, tour: int = 7, init_depth: int = 4, max_depth: int = 17):
+async def run_gplearn(dataset: str, gens: int = 50, pop: int = 500, cross: float = 0.9, mut: float = 0.1, tour: int = 7, init_depth: int = 4, max_depth: int = 17, metric: str = "mse"):
     """Comparativa oficial con la libreria gplearn"""
     try:
         X, y = DataLoader.cargar_dataset(dataset)
-        
-        # division 70-30 pura en numpy
-        rng = np.random.RandomState(42)
-        indices = rng.permutation(len(X))
-        corte = int(len(X) * 0.7)
-        train_idx, test_idx = indices[:corte], indices[corte:]
-        X_train, y_train = X[train_idx], y[train_idx]
-        X_test, y_test = X[test_idx], y[test_idx]
+        # division 70-30 pura aleatoria con sklearn
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
         
         start_time = time.time()
         
@@ -75,6 +70,12 @@ async def run_gplearn(dataset: str, gens: int = 50, pop: int = 500, cross: float
             cross = 0.9
             mut = 0.1
             p_point = 0.0
+
+        # Mapeo de metricas para gplearn
+        gp_metric = "mse"
+        if metric == "mae": gp_metric = "mean absolute error"
+        elif metric == "rmse": gp_metric = "rmse"
+        elif metric == "mape": gp_metric = "mape" # Nota: gplearn soporta mape
 
         est = SymbolicRegressor(population_size=pop,
                                generations=gens,
@@ -87,6 +88,7 @@ async def run_gplearn(dataset: str, gens: int = 50, pop: int = 500, cross: float
                                p_point_mutation=p_point,
                                max_samples=1.0,
                                verbose=0,
+                               metric=gp_metric,
                                random_state=None)
         
         est.fit(X_train, y_train)

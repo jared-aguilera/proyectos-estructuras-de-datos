@@ -9,6 +9,7 @@ fastapi
 python-multipart
 uvicorn
 gplearn
+scikit-learn
 
 # --- Utilidades extra (Reportes, PDF, Gráficas) ---
 pydantic
